@@ -1,5 +1,4 @@
 {
-  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -33,6 +32,5 @@
     "tailwindcss": "2.1.4",
     "xwind": "0.8.0",
     "typescript": "^4.3.4"
-
   }
 }
