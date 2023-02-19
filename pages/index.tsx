@@ -14,6 +14,7 @@ import * as Yup from "yup";
 import { InputField } from "../components/InputField";
 import { useEncodeMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
+import { withApollo } from "../utils/withApollo";
 
 const ConvertUrl = Yup.object().shape({
   url: Yup.string()
@@ -23,7 +24,10 @@ const ConvertUrl = Yup.object().shape({
 });
 
 function Index() {
-  const [encode, loading] = useEncodeMutation();
+  const [
+    encode,
+    // loading
+  ] = useEncodeMutation();
 
   return (
     <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6} boxShadow="2xl">
@@ -88,4 +92,4 @@ function Index() {
   );
 }
 
-export default Index;
+export default withApollo({ ssr: true })(Index);
