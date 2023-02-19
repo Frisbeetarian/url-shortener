@@ -15,9 +15,21 @@ export type Scalars = {
   Float: number;
 };
 
+export type EncodeResponse = {
+  __typename?: 'EncodeResponse';
+  errors?: Maybe<Array<FieldError>>;
+  url?: Maybe<Url>;
+};
+
+export type FieldError = {
+  __typename?: 'FieldError';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  encode: Url;
+  encode: EncodeResponse;
 };
 
 
@@ -36,22 +48,49 @@ export type Url = {
   uuid: Scalars['String'];
 };
 
+export type EncodeResponseFragment = { __typename?: 'EncodeResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, url?: { __typename?: 'Url', uuid: string, shortUrl: string } | null };
+
+export type RegularErrorFragment = { __typename?: 'FieldError', field: string, message: string };
+
+export type UrlSnippetFragment = { __typename?: 'Url', uuid: string, shortUrl: string };
+
 export type EncodeMutationVariables = Exact<{
   url: Scalars['String'];
 }>;
 
 
-export type EncodeMutation = { __typename?: 'Mutation', encode: { __typename?: 'Url', uuid: string, shortUrl: string } };
+export type EncodeMutation = { __typename?: 'Mutation', encode: { __typename?: 'EncodeResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, url?: { __typename?: 'Url', uuid: string, shortUrl: string } | null } };
 
-
+export const RegularErrorFragmentDoc = gql`
+    fragment RegularError on FieldError {
+  field
+  message
+}
+    `;
+export const UrlSnippetFragmentDoc = gql`
+    fragment UrlSnippet on Url {
+  uuid
+  shortUrl
+}
+    `;
+export const EncodeResponseFragmentDoc = gql`
+    fragment EncodeResponse on EncodeResponse {
+  errors {
+    ...RegularError
+  }
+  url {
+    ...UrlSnippet
+  }
+}
+    ${RegularErrorFragmentDoc}
+${UrlSnippetFragmentDoc}`;
 export const EncodeDocument = gql`
     mutation Encode($url: String!) {
   encode(url: $url) {
-    uuid
-    shortUrl
+    ...EncodeResponse
   }
 }
-    `;
+    ${EncodeResponseFragmentDoc}`;
 export type EncodeMutationFn = Apollo.MutationFunction<EncodeMutation, EncodeMutationVariables>;
 
 /**

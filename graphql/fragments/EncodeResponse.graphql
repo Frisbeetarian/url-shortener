@@ -1,0 +1,8 @@
+fragment EncodeResponse on EncodeResponse {
+    errors {
+        ...RegularError
+    }
+    url {
+        ...UrlSnippet
+    }
+}

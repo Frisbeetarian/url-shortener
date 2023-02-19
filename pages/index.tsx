@@ -12,6 +12,8 @@ import {
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { InputField } from "../components/InputField";
+import { useEncodeMutation } from "../generated/graphql";
+import { toErrorMap } from "../utils/toErrorMap";
 
 const ConvertUrl = Yup.object().shape({
   url: Yup.string()
@@ -20,56 +22,70 @@ const ConvertUrl = Yup.object().shape({
     .required("URL is required"),
 });
 
-const Index = () => (
-  <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6} boxShadow="2xl">
-    <Stack align={"start"}>
-      <Heading fontSize={"4xl"} textAlign={"center"}>
-        URL Shortener
-      </Heading>
-    </Stack>
+function Index() {
+  const [encode, loading] = useEncodeMutation();
 
-    <Box boxShadow={"lg"} p={8} className="border bg-black">
-      <Formik
-        initialValues={{ url: "" }}
-        validationSchema={ConvertUrl}
-        onSubmit={async (values, {}) => {
-          console.log(values);
-        }}
-      >
-        {({ isSubmitting }) => (
-          <Form>
-            <Stack spacing={4}>
-              <HStack>
-                <Box>
-                  <FormControl id="url" isRequired>
-                    <FormLabel>URL to shorten</FormLabel>
+  return (
+    <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6} boxShadow="2xl">
+      <Stack align={"start"}>
+        <Heading fontSize={"4xl"} textAlign={"center"}>
+          URL Shortener
+        </Heading>
+      </Stack>
 
-                    <InputField name="url" placeholder="url" label="" />
-                  </FormControl>
-                </Box>
-              </HStack>
+      <Box boxShadow={"lg"} p={8} className="border bg-black">
+        <Formik
+          initialValues={{ url: "" }}
+          validationSchema={ConvertUrl}
+          onSubmit={async (values, { setErrors }) => {
+            console.log(values);
+            const response = await encode({
+              variables: {
+                url: values.url,
+              },
+            });
 
-              <Stack spacing={10} pt={2}>
-                <Button
-                  className="w-1/2 ml-auto"
-                  type="submit"
-                  size="md"
-                  bg={"green.400"}
-                  color={"white"}
-                  _hover={{
-                    bg: "green.900",
-                  }}
-                  isLoading={isSubmitting}
-                >
-                  Submit
-                </Button>
+            if (response.data?.encode.errors) {
+              setErrors(toErrorMap(response.data.encode.errors));
+            } else if (response.data?.encode.url) {
+            }
+          }}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <Stack spacing={4}>
+                <HStack>
+                  <Box>
+                    <FormControl id="url" isRequired>
+                      <FormLabel>URL to shorten</FormLabel>
+
+                      <InputField name="url" placeholder="url" label="" />
+                    </FormControl>
+                  </Box>
+                </HStack>
+
+                <Stack spacing={10} pt={2}>
+                  <Button
+                    className="w-1/2 ml-auto"
+                    type="submit"
+                    size="md"
+                    bg={"green.400"}
+                    color={"white"}
+                    _hover={{
+                      bg: "green.900",
+                    }}
+                    isLoading={isSubmitting}
+                  >
+                    Submit
+                  </Button>
+                </Stack>
               </Stack>
-            </Stack>
-          </Form>
-        )}
-      </Formik>
-    </Box>
-  </Stack>
-);
+            </Form>
+          )}
+        </Formik>
+      </Box>
+    </Stack>
+  );
+}
 
 export default Index;

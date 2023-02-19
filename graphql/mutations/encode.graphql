@@ -2,7 +2,6 @@ mutation Encode (
     $url: String!
 ) {
     encode(url: $url){
-        uuid
-        shortUrl
+        ...EncodeResponse
     }
 }
