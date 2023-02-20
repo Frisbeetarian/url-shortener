@@ -1,0 +1,5 @@
+query GetUrls {
+    getUrls {
+        ...UrlSnippet
+    }
+}

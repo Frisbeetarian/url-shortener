@@ -44,6 +44,7 @@ export type Query = {
 
 export type Url = {
   __typename?: 'Url';
+  originalUrl: Scalars['String'];
   shortUrl: Scalars['String'];
   uuid: Scalars['String'];
 };
@@ -60,6 +61,11 @@ export type EncodeMutationVariables = Exact<{
 
 
 export type EncodeMutation = { __typename?: 'Mutation', encode: { __typename?: 'EncodeResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, url?: { __typename?: 'Url', uuid: string, shortUrl: string } | null } };
+
+export type GetUrlsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUrlsQuery = { __typename?: 'Query', getUrls: Array<{ __typename?: 'Url', uuid: string, shortUrl: string }> };
 
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
@@ -117,3 +123,37 @@ export function useEncodeMutation(baseOptions?: Apollo.MutationHookOptions<Encod
 export type EncodeMutationHookResult = ReturnType<typeof useEncodeMutation>;
 export type EncodeMutationResult = Apollo.MutationResult<EncodeMutation>;
 export type EncodeMutationOptions = Apollo.BaseMutationOptions<EncodeMutation, EncodeMutationVariables>;
+export const GetUrlsDocument = gql`
+    query GetUrls {
+  getUrls {
+    ...UrlSnippet
+  }
+}
+    ${UrlSnippetFragmentDoc}`;
+
+/**
+ * __useGetUrlsQuery__
+ *
+ * To run a query within a React component, call `useGetUrlsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUrlsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUrlsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUrlsQuery(baseOptions?: Apollo.QueryHookOptions<GetUrlsQuery, GetUrlsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUrlsQuery, GetUrlsQueryVariables>(GetUrlsDocument, options);
+      }
+export function useGetUrlsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUrlsQuery, GetUrlsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUrlsQuery, GetUrlsQueryVariables>(GetUrlsDocument, options);
+        }
+export type GetUrlsQueryHookResult = ReturnType<typeof useGetUrlsQuery>;
+export type GetUrlsLazyQueryHookResult = ReturnType<typeof useGetUrlsLazyQuery>;
+export type GetUrlsQueryResult = Apollo.QueryResult<GetUrlsQuery, GetUrlsQueryVariables>;
