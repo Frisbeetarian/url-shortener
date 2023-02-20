@@ -1,0 +1,7 @@
+mutation Decode (
+    $url: String!
+) {
+    decode(url: $url){
+        originalUrl
+    }
+}

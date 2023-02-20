@@ -15,6 +15,12 @@ export type Scalars = {
   Float: number;
 };
 
+export type DecodeResponse = {
+  __typename?: 'DecodeResponse';
+  errors?: Maybe<Array<FieldError>>;
+  originalUrl?: Maybe<Scalars['String']>;
+};
+
 export type EncodeResponse = {
   __typename?: 'EncodeResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -29,7 +35,13 @@ export type FieldError = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  decode: DecodeResponse;
   encode: EncodeResponse;
+};
+
+
+export type MutationDecodeArgs = {
+  url: Scalars['String'];
 };
 
 
@@ -54,6 +66,13 @@ export type EncodeResponseFragment = { __typename?: 'EncodeResponse', errors?: A
 export type RegularErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 
 export type UrlSnippetFragment = { __typename?: 'Url', uuid: string, shortUrl: string, originalUrl: string };
+
+export type DecodeMutationVariables = Exact<{
+  url: Scalars['String'];
+}>;
+
+
+export type DecodeMutation = { __typename?: 'Mutation', decode: { __typename?: 'DecodeResponse', originalUrl?: string | null } };
 
 export type EncodeMutationVariables = Exact<{
   url: Scalars['String'];
@@ -91,6 +110,39 @@ export const EncodeResponseFragmentDoc = gql`
 }
     ${RegularErrorFragmentDoc}
 ${UrlSnippetFragmentDoc}`;
+export const DecodeDocument = gql`
+    mutation Decode($url: String!) {
+  decode(url: $url) {
+    originalUrl
+  }
+}
+    `;
+export type DecodeMutationFn = Apollo.MutationFunction<DecodeMutation, DecodeMutationVariables>;
+
+/**
+ * __useDecodeMutation__
+ *
+ * To run a mutation, you first call `useDecodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDecodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [decodeMutation, { data, loading, error }] = useDecodeMutation({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useDecodeMutation(baseOptions?: Apollo.MutationHookOptions<DecodeMutation, DecodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DecodeMutation, DecodeMutationVariables>(DecodeDocument, options);
+      }
+export type DecodeMutationHookResult = ReturnType<typeof useDecodeMutation>;
+export type DecodeMutationResult = Apollo.MutationResult<DecodeMutation>;
+export type DecodeMutationOptions = Apollo.BaseMutationOptions<DecodeMutation, DecodeMutationVariables>;
 export const EncodeDocument = gql`
     mutation Encode($url: String!) {
   encode(url: $url) {
