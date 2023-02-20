@@ -44,7 +44,7 @@ function Index() {
   }, [data?.getUrls]);
 
   return (
-    <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6} boxShadow="2xl">
+    <Stack spacing={8} mx={"auto"} maxW={"2xl"} py={12} px={6} boxShadow="2xl">
       <Stack align={"start"}>
         <Heading fontSize={"4xl"} textAlign={"center"}>
           URL Shortener
@@ -56,16 +56,21 @@ function Index() {
           initialValues={{ url: "" }}
           validationSchema={ConvertUrl}
           onSubmit={async (values, { setErrors }) => {
-            console.log(values);
             const response = await encode({
               variables: {
                 url: values.url,
               },
             });
 
-            if (response.data?.encode.errors) {
+            if (
+              response.data?.encode.errors &&
+              response.data?.encode.errors.length !== 0
+            ) {
               setErrors(toErrorMap(response.data.encode.errors));
             } else if (response.data?.encode.url) {
+              setUrls((prevState: Url[] | []) => {
+                return [...prevState, response.data?.encode.url];
+              });
             }
           }}
         >

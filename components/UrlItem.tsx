@@ -1,12 +1,14 @@
 import React from "react";
-import { Box } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 
 function UrlItem({ originalUrl, shortUrl }) {
   return (
-    <Box>
-      <p>{originalUrl}</p>
-      <p>{shortUrl}</p>
-    </Box>
+    <Flex justifyContent="space-between">
+      <p className="">{originalUrl}</p>
+      <a href={shortUrl} target="_blank">
+        {shortUrl}
+      </a>
+    </Flex>
   );
 }
 
