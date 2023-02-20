@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -12,9 +12,10 @@ import {
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import { InputField } from "../components/InputField";
-import { useEncodeMutation } from "../generated/graphql";
+import { Url, useEncodeMutation, useGetUrlsQuery } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { withApollo } from "../utils/withApollo";
+import UrlItem from "../components/UrlItem";
 
 const ConvertUrl = Yup.object().shape({
   url: Yup.string()
@@ -24,10 +25,23 @@ const ConvertUrl = Yup.object().shape({
 });
 
 function Index() {
+  const { data, loading: getUrlsLoading } = useGetUrlsQuery({
+    skip: false,
+    fetchPolicy: "network-only",
+  });
+
+  const [urls, setUrls] = useState<Url[] | []>([]);
+
   const [
     encode,
     // loading
   ] = useEncodeMutation();
+
+  useEffect(() => {
+    if (data?.getUrls && data?.getUrls.length !== 0) {
+      setUrls(data?.getUrls);
+    }
+  }, [data?.getUrls]);
 
   return (
     <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6} boxShadow="2xl">
@@ -88,6 +102,18 @@ function Index() {
           )}
         </Formik>
       </Box>
+
+      {!getUrlsLoading && urls && urls.length !== 0 ? (
+        <Stack className="flex flex-col">
+          {urls.map((url, i) => (
+            <UrlItem
+              key={i}
+              originalUrl={url.originalUrl}
+              shortUrl={url.shortUrl}
+            />
+          ))}
+        </Stack>
+      ) : null}
     </Stack>
   );
 }

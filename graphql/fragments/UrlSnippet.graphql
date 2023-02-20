@@ -1,4 +1,5 @@
 fragment UrlSnippet on Url {
     uuid
     shortUrl
+    originalUrl
 }

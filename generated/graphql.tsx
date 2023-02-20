@@ -49,23 +49,23 @@ export type Url = {
   uuid: Scalars['String'];
 };
 
-export type EncodeResponseFragment = { __typename?: 'EncodeResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, url?: { __typename?: 'Url', uuid: string, shortUrl: string } | null };
+export type EncodeResponseFragment = { __typename?: 'EncodeResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, url?: { __typename?: 'Url', uuid: string, shortUrl: string, originalUrl: string } | null };
 
 export type RegularErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 
-export type UrlSnippetFragment = { __typename?: 'Url', uuid: string, shortUrl: string };
+export type UrlSnippetFragment = { __typename?: 'Url', uuid: string, shortUrl: string, originalUrl: string };
 
 export type EncodeMutationVariables = Exact<{
   url: Scalars['String'];
 }>;
 
 
-export type EncodeMutation = { __typename?: 'Mutation', encode: { __typename?: 'EncodeResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, url?: { __typename?: 'Url', uuid: string, shortUrl: string } | null } };
+export type EncodeMutation = { __typename?: 'Mutation', encode: { __typename?: 'EncodeResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, url?: { __typename?: 'Url', uuid: string, shortUrl: string, originalUrl: string } | null } };
 
 export type GetUrlsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUrlsQuery = { __typename?: 'Query', getUrls: Array<{ __typename?: 'Url', uuid: string, shortUrl: string }> };
+export type GetUrlsQuery = { __typename?: 'Query', getUrls: Array<{ __typename?: 'Url', uuid: string, shortUrl: string, originalUrl: string }> };
 
 export const RegularErrorFragmentDoc = gql`
     fragment RegularError on FieldError {
@@ -77,6 +77,7 @@ export const UrlSnippetFragmentDoc = gql`
     fragment UrlSnippet on Url {
   uuid
   shortUrl
+  originalUrl
 }
     `;
 export const EncodeResponseFragmentDoc = gql`
