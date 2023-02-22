@@ -1,0 +1,6 @@
+fragment DecodeResponse on DecodeResponse {
+    errors {
+        ...RegularError
+    }
+    originalUrl
+}

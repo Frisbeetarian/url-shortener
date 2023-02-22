@@ -61,6 +61,8 @@ export type Url = {
   uuid: Scalars['String'];
 };
 
+export type DecodeResponseFragment = { __typename?: 'DecodeResponse', originalUrl?: string | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null };
+
 export type EncodeResponseFragment = { __typename?: 'EncodeResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, url?: { __typename?: 'Url', uuid: string, shortUrl: string, originalUrl: string } | null };
 
 export type RegularErrorFragment = { __typename?: 'FieldError', field: string, message: string };
@@ -72,7 +74,7 @@ export type DecodeMutationVariables = Exact<{
 }>;
 
 
-export type DecodeMutation = { __typename?: 'Mutation', decode: { __typename?: 'DecodeResponse', originalUrl?: string | null } };
+export type DecodeMutation = { __typename?: 'Mutation', decode: { __typename?: 'DecodeResponse', originalUrl?: string | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null } };
 
 export type EncodeMutationVariables = Exact<{
   url: Scalars['String'];
@@ -92,6 +94,14 @@ export const RegularErrorFragmentDoc = gql`
   message
 }
     `;
+export const DecodeResponseFragmentDoc = gql`
+    fragment DecodeResponse on DecodeResponse {
+  errors {
+    ...RegularError
+  }
+  originalUrl
+}
+    ${RegularErrorFragmentDoc}`;
 export const UrlSnippetFragmentDoc = gql`
     fragment UrlSnippet on Url {
   uuid
@@ -113,10 +123,10 @@ ${UrlSnippetFragmentDoc}`;
 export const DecodeDocument = gql`
     mutation Decode($url: String!) {
   decode(url: $url) {
-    originalUrl
+    ...DecodeResponse
   }
 }
-    `;
+    ${DecodeResponseFragmentDoc}`;
 export type DecodeMutationFn = Apollo.MutationFunction<DecodeMutation, DecodeMutationVariables>;
 
 /**

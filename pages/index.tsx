@@ -18,10 +18,7 @@ import { withApollo } from "../utils/withApollo";
 import UrlItem from "../components/UrlItem";
 
 const ConvertUrl = Yup.object().shape({
-  url: Yup.string()
-    .min(3, "Username is too short.")
-    .max(50, "Username is too long.")
-    .required("URL is required"),
+  url: Yup.string().min(3, "Url is too short.").required("URL is required"),
 });
 
 function Index() {
