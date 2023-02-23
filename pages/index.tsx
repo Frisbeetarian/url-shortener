@@ -65,6 +65,7 @@ function Index() {
             ) {
               setErrors(toErrorMap(response.data.encode.errors));
             } else if (response.data?.encode.url) {
+              // @ts-ignore
               setUrls((prevState: Url[] | []) => {
                 return [...prevState, response.data?.encode.url];
               });
